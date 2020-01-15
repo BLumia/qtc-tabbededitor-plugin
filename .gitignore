@@ -1,0 +1,5 @@
+# orig repo
+.svn/
+
+# user config
+*.user
