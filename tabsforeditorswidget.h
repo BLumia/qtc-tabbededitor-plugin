@@ -17,7 +17,7 @@ class TabsForEditorsWidget : public QWidget
     Q_OBJECT
 
 public:
-    TabsForEditorsWidget(QWidget * parent = 0);
+    TabsForEditorsWidget(QWidget * parent = nullptr);
     ~TabsForEditorsWidget();
 
     QWidget *getTabWidget();
@@ -39,8 +39,6 @@ private slots:
     void handleTabCloseRequested(int index);
 
     void selectTabAction();
-
-    void updateTabText();
 
 };
 

@@ -7,7 +7,6 @@ SOURCES += \
     tabsforeditorswidget.cpp
 
 HEADERS += tabbededitorplugin.h \
-        tabbededitor_global.h \
         tabbededitorconstants.h \
     tabsforeditorswidget.h
 

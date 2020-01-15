@@ -1,8 +1,6 @@
 #ifndef TABBEDEDITOR_H
 #define TABBEDEDITOR_H
 
-#include "tabbededitor_global.h"
-
 #include <extensionsystem/iplugin.h>
 #include <QFrame>
 #include <coreplugin/editormanager/editormanager.h>

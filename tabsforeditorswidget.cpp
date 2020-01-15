@@ -113,7 +113,15 @@ void TabsForEditorsWidget::handleEditorOpened(Core::IEditor *editor)
     tabWidget->addTab(tab, editor->document()->displayName());
     tabsEditors.insert(tab, editor);
 
-    connect(editor->document(), SIGNAL(changed()), this, SLOT(updateTabText()));
+    Core::IDocument *document = editor->document();
+    connect(document, &Core::IDocument::changed, [this, editor, document]() {
+        QString tabTitle = document->displayName();
+        if (document->isModified())
+            tabTitle += QLatin1Char('*');
+
+        const int tabIndex = tabWidget->indexOf(getTab(editor));
+        tabWidget->setTabText(tabIndex, tabTitle);
+    });
 }
 
 void TabsForEditorsWidget::handlerEditorClosed(QList<Core::IEditor *> editors)
@@ -170,25 +178,6 @@ void TabsForEditorsWidget::selectTabAction()
         int index = tabShortcuts.indexOf(shortCut);
         tabWidget->setCurrentIndex(index);
     }
-}
-
-void TabsForEditorsWidget::updateTabText()
-{
-    Core::IDocument *document = qobject_cast<Core::IDocument *>(QObject::sender());
-    QString tabTitle = document->displayName();
-    if (document->isModified())
-    {
-        tabTitle = tabTitle + QString::fromUtf8("*");
-    }
-
-    Core::EditorManager *em = Core::EditorManager::instance();
-//    QList<Core::IEditor*> editors = em->documentModel()->editorsForDocument(document);
-//    for (int i = 0 ; i < editors.count() ; i++)
-//    {
-//        QWidget *tabToUpdate = this->getTab(editors.at(i));
-//        int tabToUpdateIndex = tabWidget->indexOf( tabToUpdate );
-//        tabWidget->setTabText(tabToUpdateIndex , tabTitle );
-//    }
 }
 
 QWidget *TabsForEditorsWidget::getTabWidget()
