@@ -2,9 +2,11 @@
 
 #include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/editormanager/editorview.h>
+#include <coreplugin/fileiconprovider.h>
 #include <coreplugin/idocument.h>
 #include <texteditor/texteditor.h>
 #include <utils/stylehelper.h>
+#include <utils/fileutils.h>
 
 #include <QList>
 #include <QMap>
@@ -41,8 +43,10 @@ TabsForEditorsWidget::TabsForEditorsWidget(QWidget *parent):QWidget(parent)
     {
         QWidget *tab = new QWidget();
         Core::IEditor *editor = editorsItr.next();
+        QString filePath(Utils::FileUtils::shortNativePath(editor->document()->filePath()));
 
-        tabWidget->addTab(tab, editor->document()->displayName());
+        const int index = tabWidget->addTab(tab, editor->document()->displayName());
+        tabWidget->setTabToolTip(index, filePath);
 
         tabsEditors.insert(tab, editor);
     }
@@ -87,21 +91,16 @@ void TabsForEditorsWidget::updateCurrentTab(Core::IEditor *editor)
 
 void TabsForEditorsWidget::handleCurrentChanged(int index)
 {
-    if (index != -1)
-    {
+    if (index != -1) {
         QWidget *tab = tabWidget->widget(index);
-        if (!tab)
-            return;
-        if (tabsEditors.contains(tab))
-        {
+        if (!tab) return;
+        if (tabsEditors.contains(tab)) {
             Core::IEditor *editor = this->getEditor(tab);
             if(!editor)
                 return;
             Core::EditorManager::instance()->activateEditor(editor);
         }
-    }
-    else
-    {
+    } else {
         return;
     }
 }
@@ -109,11 +108,15 @@ void TabsForEditorsWidget::handleCurrentChanged(int index)
 void TabsForEditorsWidget::handleEditorOpened(Core::IEditor *editor)
 {
     QWidget *tab = new QWidget();
+    Core::IDocument *document = editor->document();
+    QString filePath(Utils::FileUtils::shortNativePath(document->filePath()));
 
-    tabWidget->addTab(tab, editor->document()->displayName());
+    const int index = tabWidget->addTab(tab, document->displayName());
+    tabWidget->setTabToolTip(index, filePath);
+    tabWidget->setTabIcon(index, Core::FileIconProvider::icon(QFileInfo(filePath)));
+
     tabsEditors.insert(tab, editor);
 
-    Core::IDocument *document = editor->document();
     connect(document, &Core::IDocument::changed, [this, editor, document]() {
         QString tabTitle = document->displayName();
         if (document->isModified())
@@ -150,15 +153,13 @@ void TabsForEditorsWidget::handleTabCloseRequested(int index)
 {
     if (-1 < index) {
         QWidget *tab = tabWidget->widget(index);
-        if (!tab)
-            return;
+        if (!tab) return;
         QList<Core::IEditor*> editorsToClose;
         editorsToClose.clear();
         if (tabsEditors.contains(tab)) {
             Core::IEditor *editor;
             editor = this->getEditor(tab);
-            if (!editor)
-            {
+            if (!editor) {
                 return;
             }
             editorsToClose.append(this->getEditor(tab));
