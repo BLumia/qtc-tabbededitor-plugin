@@ -2,9 +2,9 @@
 
 #include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/editormanager/editorview.h>
-#include <coreplugin/fileiconprovider.h>
 #include <coreplugin/idocument.h>
 #include <texteditor/texteditor.h>
+#include <utils/fsengine/fileiconprovider.h>
 #include <utils/stylehelper.h>
 #include <utils/fileutils.h>
 
@@ -16,6 +16,7 @@
 #include <QPointer>
 #include <QObject>
 #include <QMetaObject>
+#include <QListIterator>
 
 namespace TabbedEditor {
 namespace Internal {
@@ -38,12 +39,12 @@ TabsForEditorsWidget::TabsForEditorsWidget(QWidget *parent):QWidget(parent)
     Core::EditorManager *em = Core::EditorManager::instance();
 
     QList<Core::IEditor*> editors = em->visibleEditors();
-    QListIterator<Core::IEditor*> editorsItr(editors);
-    while (editorsItr.hasNext())
+    QList<Core::IEditor*>::iterator editorsItr(editors.begin());
+    while (editorsItr != editors.end())
     {
         QWidget *tab = new QWidget();
-        Core::IEditor *editor = editorsItr.next();
-        QString filePath(Utils::FileUtils::shortNativePath(editor->document()->filePath()));
+        Core::IEditor *editor = *(editorsItr++);
+        QString filePath(editor->document()->filePath().shortNativePath());
 
         const int index = tabWidget->addTab(tab, editor->document()->displayName());
         tabWidget->setTabToolTip(index, filePath);
@@ -109,11 +110,11 @@ void TabsForEditorsWidget::handleEditorOpened(Core::IEditor *editor)
 {
     QWidget *tab = new QWidget();
     Core::IDocument *document = editor->document();
-    QString filePath(Utils::FileUtils::shortNativePath(document->filePath()));
+    QString filePath(document->filePath().shortNativePath());
 
     const int index = tabWidget->addTab(tab, document->displayName());
     tabWidget->setTabToolTip(index, filePath);
-    tabWidget->setTabIcon(index, Core::FileIconProvider::icon(QFileInfo(filePath)));
+    tabWidget->setTabIcon(index, Utils::FileIconProvider::icon(document->filePath()));
 
     tabsEditors.insert(tab, editor);
 
@@ -129,11 +130,11 @@ void TabsForEditorsWidget::handleEditorOpened(Core::IEditor *editor)
 
 void TabsForEditorsWidget::handlerEditorClosed(QList<Core::IEditor *> editors)
 {
-    QListIterator<Core::IEditor*> editorsItr(editors);
+    QList<Core::IEditor*>::iterator editorsItr(editors.begin());
 
-    while (editorsItr.hasNext())
+    while (editorsItr != editors.end())
     {
-        Core::IEditor *editor = editorsItr.next();
+        Core::IEditor *editor = *(editorsItr++);
         if(!editor)
             return;
         QWidget *tab = getTab(editor);
@@ -200,9 +201,9 @@ bool TabsForEditorsWidget::isEditorWdiget(QObject *obj)
 {
     if(!obj)
         return false;
-    QMapIterator<QWidget*, Core::IEditor*> i(tabsEditors);
-    while (i.hasNext()) {
-        i.next();
+    QMap<QWidget*, Core::IEditor*>::iterator i(tabsEditors.begin());
+    while (i != tabsEditors.end()) {
+        i++;
         if (obj == i.value()->widget())
             return true;
     }

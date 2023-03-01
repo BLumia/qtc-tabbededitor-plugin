@@ -47,8 +47,6 @@ bool TabbedEditorPlugin::initialize(const QStringList &arguments, QString *error
     connect(em, SIGNAL(editorOpened(Core::IEditor*)), this, SLOT(updateStyleToBaseColor()));
 
     backgroundFrame = new QFrame();
-    backgroundFrame->setMinimumHeight(25);
-    backgroundFrame->setMaximumHeight(25);
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);

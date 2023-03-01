@@ -1,5 +1,6 @@
-# orig repo
-.svn/
+# build folder
+[Bb]uild/
 
 # user config
 *.user
+

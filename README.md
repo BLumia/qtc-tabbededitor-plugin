@@ -4,28 +4,14 @@ based on [@snasoft](https://sourceforge.net/u/snasoft/profile/) and [@trollixx](
 
 ## Build:
 
-I did my work under Deepin but the following steps should works under all debian based system.
+Assuming you are using Arch Linux:
 
-Require the qtcreator(on my system the package just called `qtcreator`) installed.
-
-Use `apt source qtcreator` to get the source code of QtCreator.
-
-Either set the `IDE_SOURCE_TREE` when running qmake, or set the `QTC_SOURCE` environment variable, or by edit the `tabbededitor.pro` and set it to the currect QtCreator source location.
-
-If you are under a normal amd64 system, `IDE_BUILD_TREE` can remain `/usr/lib/x86_64-linux-gnu/qtcreator` without modification, or you should set `IDE_BUILD_TREE` or `QTC_BUILD` environment variable to the currect path.
-
-Then do your normal `qmake` step :)
-
-```
-$ cd /path/to/the/plugin/source/folder/
-$ mkdir build
-$ cd build
-$ qmake ../
-$ make
-```
-
-Then it will be built under `~/.local/share/data/QtProject/qtcreator/plugins/<qtcreator-version>/`
+1. Install `qtcreator-devel`, `cmake` and a C++ toolchain for building
+2. `mkdir build && cd build`
+3. `cmake ..`
+4. `cmake --build .`, then you will get a `lib/qtcreator/plugins/libTabbedEditor.so` which is the plugin file
+5. Put the plugin to where Qt can find it, `~/.local/share/data/QtProject/qtcreator/plugins/<qtcreator-version>/` for example.
 
 ## Other plugins you may interested...
 
- - [Terminal Plugin for QtCreator](https://github.com/BLumia/qtc-terminal-plugin)
+ - ~~[terminal Plugin for QtCreator](https://github.com/BLumia/qtc-terminal-plugin)~~ won't work under Archlinux for now, and QtCreator will bring official terminal plugin in next major QtCreator release.

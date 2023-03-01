@@ -1,11 +1,11 @@
 {
-    \"Name\" : \"MyPlugin\",
+    \"Name\" : \"Pineapple TabbedEditor QtC Plugin\",
     \"Version\" : \"0.0.1\",
     \"CompatVersion\" : \"0.0.1\",
-    \"Vendor\" : \"MyCompany\",
-    \"Copyright\" : \"(C) MyCompany\",
-    \"License\" : \"Put your license information here\",
-    \"Description\" : \"Put a short description of your plugin here\",
-    \"Url\" : \"http://www.mycompany.com\",
+    \"Vendor\" : \"BLumia\",
+    \"Copyright\" : \"(C) BLumia\",
+    \"License\" : \"Same as QtCreator\",
+    \"Description\" : \"Plugin add tabs for QtCreator\",
+    \"Url\" : \"http://www.blumia.net\",
     $$dependencyList
 }
